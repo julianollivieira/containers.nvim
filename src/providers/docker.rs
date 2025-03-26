@@ -1,4 +1,4 @@
-use std::process::Command;
+use std::{process::Command, str::FromStr};
 
 use serde::Deserialize;
 
@@ -42,6 +42,7 @@ impl Provider for Docker {
     fn get_containers() -> anyhow::Result<Vec<Container>> {
         let output = Command::new("docker")
             .arg("ps")
+            .arg("-a")
             .arg("--format")
             .arg("json")
             .output()?;
@@ -63,6 +64,9 @@ impl Provider for Docker {
             .iter()
             .map(|docker_container| Container {
                 id: docker_container.id.clone(),
+                state: super::State::from_str(&docker_container.state).unwrap(),
+                name: docker_container.names.clone(),
+                image: docker_container.image.clone(),
             })
             .collect())
     }

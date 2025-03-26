@@ -7,10 +7,10 @@ use nvim_oxi::{
         types::{SplitDirection, WindowConfig},
     },
 };
-use providers::Provider;
+use providers::{Provider, State};
 
 #[nvim_oxi::plugin]
-fn nvim_docker() -> anyhow::Result<Dictionary> {
+fn containers() -> anyhow::Result<Dictionary> {
     let open = Function::from_fn(|_: usize| {
         let mut window_config = WindowConfig::default();
         window_config.split = Some(SplitDirection::Right);
@@ -20,7 +20,17 @@ fn nvim_docker() -> anyhow::Result<Dictionary> {
         let containers = providers::docker::Docker::get_containers().unwrap();
 
         let lines: Vec<String> = containers.iter().fold(Vec::new(), |mut acc, c| {
-            acc.extend_from_slice(&[format!("- {}", c.id)]);
+            let symbol = match c.state {
+                State::Exited => "◯",
+                State::Running => "●",
+            };
+
+            acc.extend_from_slice(&[
+                format!("{} {}", symbol, c.name),
+                format!("└─ id: {}", c.id),
+                format!("└─ image: {}", c.image),
+                "".to_string(),
+            ]);
 
             acc
         });
