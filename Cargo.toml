@@ -8,6 +8,8 @@ crate-type = ["cdylib"]
 
 [dependencies]
 anyhow = "1.0.97"
+jiff = "0.1.4"
+jiffy = "0.1.1"
 nvim-oxi = { version = "0.5.1", features = ["neovim-0-10"] }
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.140"

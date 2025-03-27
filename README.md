@@ -38,4 +38,4 @@ require('containers').setup({
 - [ ] start/stop containers
 - [ ] add option for using floating window instead
 - [ ] telescope pickers
-
+- [ ] rich customization
